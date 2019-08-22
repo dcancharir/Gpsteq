@@ -1,0 +1,350 @@
+﻿@model List<Gpstel.Models.Vehiculo>
+@using Gpstel.Models;
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Vehiculo</h2>
+
+<div class="col-md-12">
+
+
+    <div class="table-data__tool">
+        <div class="table-data__tool-left">
+
+            <div class="rs-select2--light rs-select2--sm">
+
+                <div class="dropDownSelect2"></div>
+            </div>
+
+        </div>
+        <div class="table-data__tool-right">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nuevo" onclick="limpiar();">
+                <i class="zmdi zmdi-plus"></i>Agregar Vehiculo
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+        <table id="example" class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Placa</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    @*<th>Año del Vehiculo</th>*@
+                    @*<th>Color</th>*@
+                    <th>Numero de Motor</th>
+                    <th>Tipo</th>
+                    @*<th>Estado</th>*@
+                    <th>Gps</th>
+                    @*<th>Fecha de Instalación</th>*@
+                    <th>Mensualidad</th>
+                    <th>Cliente</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+            {
+
+                    <tr>
+                        <td>@item.idvehiculo</td>
+                        <td>@(item.placa) </td>
+                        <td>@(item.marca)</td>
+                        <td>@(item.modelo)</td>
+                        @*<td>@(item.anio_vehiculo)</td>*@
+                        @*<td>@(item.color)</td>*@
+                        <td>@(item.nro_motor)</td>
+                        <td>@(item.particular_mtc)</td>
+                        @*<td>@(item.estado)</td>*@
+                        <td>@(item.GPS.modelo) - @(item.GPS.imei)</td>
+                        @*<td>@(item.fecha_instalacion)</td>*@
+                        <td>@(item.mensualidad)</td>
+                        <td>@(item.Cliente.nombre)</td>
+
+                        <td>
+                            
+
+                                <button type="button" class="btn btn-primary" data-placement="top" title="Edit" data-toggle="modal" data-target="#nuevo" onclick="obtenerVehiculo('@item.idvehiculo')">
+                                    Editar
+                                </button>
+
+                                <a href="#" title="Eliminar" class="btn btn-warning" onclick="consultar('@item.idvehiculo')">
+                                   Eliminar
+
+                                </a>
+                                <a href="#" class="btn btn-info" onclick="ob('@item.idvehiculo')">Observacion</a>
+                           
+                        </td>
+                    </tr>
+
+                }
+
+
+
+
+            </tbody>
+
+        </table>
+
+
+
+
+
+<!-- Modal Guardar/Editar -->
+<div class="modal fade" id="nuevo" tabindex="-1" role="dialog" aria-labelledby="Nuevo Vehiculo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <input type="button" class="btn-info" id="tituloModal" value="Nuevo Vehiculo" disabled />
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input value="0" type="hidden" id="idVehiculo" />
+                    <input value="a" type="hidden" id="estado" />
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Placa:</label>
+                        <input type="text" class="form-control" id="placa" />
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Marca:</label>
+                        <input type="text" class="form-control" id="marca" />
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Modelo:</label>
+                        <input type="text" class="form-control" id="modelo" />
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Año:</label>
+                        <input type="text" class="form-control" id="anio_vehiculo" />
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Color:</label>
+                        <input type="text" class="form-control" id="color" />
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Nro de Motor:</label>
+                        <input type="text" class="form-control" id="nro_motor" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Particular-MTC:</label>
+                        <select class="form-control" id="particular_mtc">
+                            <option value="particular">Particular</option>
+                            <option value="mtc">MTC</option>
+                         
+                        </select>
+                    </div>
+                    @*<div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Partcular/MTC:</label>
+                        <input type="text" class="form-control" id="particular_mtc" />
+                    </div>*@
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Mensualidad:</label>
+                        <input type="text" class="form-control" id="mensualidad" />
+                    </div>
+                    @*<div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Estado:</label>
+                        <input type="text" class="form-control" id="estado" />
+                    </div>*@            
+
+                   
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">GPS:</label>
+                        <select class="form-control" id="idGps">
+
+                            <option value="0" id="idGpsVehiculo">Elija un GPS</option>
+
+                            @foreach (GPS gps in ViewBag.gpsNorepetido)
+                            {
+                                <option value="@gps.idgps">@gps.imei</option>
+                            }
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Cliente:</label>
+                        <select class="form-control" id="idCliente">
+
+                            <option value="0" id="idClienteVehiculo">Elija un Cliente</option>
+
+                            @foreach (Cliente cliente in ViewBag.listacliente)
+                            {
+                                <option value="@cliente.idcliente">@(cliente.nombre +" "+ @cliente.apellido)</option>
+                            }
+
+                        </select>
+                    </div>             
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Fecha de Instalacion:</label>
+                        <input type="text" data-date-format="dd/mm/yyyy" class="form-control time" id="fecha_instalacion" />
+                    </div>
+
+                 
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <input type="button" value="Guardar" class="btn btn-primary" id="guardar" onclick="guardarVehiculo()" />
+            </div>
+        </div>
+    </div>
+    @section scripts{
+        
+   
+
+<script>
+
+
+    $('#fecha_instalacion').datepicker({
+        format: 'dd/mm/yyyy',
+        startDate: '-3d'
+    });
+
+    function guardarVehiculo() {
+
+        var url = "@Url.Action("guardarEditar", "Vehiculo")";
+
+        var idvehiculo = $("#idVehiculo").val();
+        var placa = $("#placa").val();
+        var marca = $("#marca").val();
+        var modelo = $("#modelo").val();
+        var anio = $("#anio_vehiculo").val();
+        var color = $("#color").val();
+        var nro_motor = $("#nro_motor").val();
+        var particular_mtc = $("#particular_mtc").val();
+        var mensualidad = $("#mensualidad").val();
+        var estado = $("#estado").val();
+        var gps = $("#idGps").val();
+        var cliente = $("#idCliente").val();
+        var fecha_instalacion = $("#fecha_instalacion").val();
+
+
+        var objVehiculo = {
+            idVehiculo: idvehiculo,
+            placa: placa,
+            marca: marca,
+            modelo: modelo,
+            anio_vehiculo: anio,
+            color: color,
+            nro_motor: nro_motor,
+            particular_mtc: particular_mtc,
+            mensualidad: mensualidad,
+            estado: estado,
+            idGps: gps,
+            idCliente: cliente,
+            fecha_instalacion: fecha_instalacion
+        };
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: JSON.stringify(objVehiculo),
+            contentType: "application/json",
+            success: function (respuesta) {
+                alert(respuesta.mensaje);
+                $('.modal').modal('hide');
+
+            }
+
+        });
+    }
+
+</script>
+
+
+
+<script>
+
+
+    function obtenerVehiculo(idVehiculo) {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("getVehiculo", "Vehiculo")",
+                        data: JSON.stringify({ id: idVehiculo }),
+                        contentType: "application/json",
+
+
+                       success: function (vehiculo) {
+
+
+                           $("#tituloModal").val("Datos de Vehiculo");
+                           $("#idVehiculo").val(vehiculo.jsonVehiculo.idVehiculo);
+                           $("#modelo").val(vehiculo.jsonVehiculo.modelo);
+                           $("#placa").val(vehiculo.jsonVehiculo.placa);
+                           $("#marca").val(vehiculo.jsonVehiculo.marca);
+                           $("#anio_vehiculo").val(vehiculo.jsonVehiculo.anio_vehiculo);                     
+                           $("#color").val(vehiculo.jsonVehiculo.color);
+                           $("#nro_motor").val(vehiculo.jsonVehiculo.nro_motor);
+                           $("#particular_mtc").val(vehiculo.jsonVehiculo.particular_mtc);
+                           $("#mensualidad").val(vehiculo.jsonVehiculo.mensualidad);
+                           $("#estado").val(vehiculo.jsonVehiculo.estado);
+                           $("#idGpsVehiculo").val(vehiculo.jsonVehiculo.idGps);
+                           $("#idClienteVehiculo").val(vehiculo.jsonVehiculo.idCliente);
+                           $("#fecha_instalacion").val(vehiculo.jsonVehiculo.fecha_instalacion);
+                           console.log(vehiculo);
+
+
+                        }
+
+                    });
+          }
+
+</script>
+
+
+<script>
+
+    function limpiar() {
+
+        $("#tituloModal").val("Nuevo Vehiculo");
+        $("#placa").val("");
+        $("#placa").val("");
+        $("#modelo").val("");
+        $("#anio").val("");
+        $("#color").val("");
+        $("#nro_motor").val("");
+        $("#particular_mtc").val("");
+        $("#anio").val("");
+        $("#idGps").val(0);
+        $("#idCliente").val(0);
+     
+    }
+</script>
+    <script>
+    function consultar(id) {
+        var txt;
+        var r = confirm("Desea eliminar el Vehiculo??");
+        if (r == true) {
+            txt = "Eliminado!";
+            eliminar(id);
+        } else {
+            txt = "Cancelaste!";
+        }
+    }
+    </script>
+
+<script>
+
+
+    function eliminar(id) {
+        location.href = "@Url.Action("eliminarVehiculo", "Vehiculo")"+"/"+id;
+    }
+      function ob(id) {
+         location.href = "@Url.Action("observacion", "ObVehiculo")" + "/" + id;
+    }
+</script>
+
+    }

@@ -1,0 +1,297 @@
+﻿@model List<Gpstel.Models.GPS>
+@using Gpstel.Models;
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>GPS</h2>
+
+<div class="col-md-12">
+
+
+    <div class="table-data__tool">
+        <div class="table-data__tool-left">
+
+            <div class="rs-select2--light rs-select2--sm">
+
+                <div class="dropDownSelect2"></div>
+            </div>
+
+        </div>
+        <div class="table-data__tool-right">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nuevo" onclick="limpiar();">
+                <i class="zmdi zmdi-plus"></i>Agregar Nuevo GPS
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+        <table id="example" class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Modelo</th>
+                    <th>Estado de Uso</th>
+                    <th>Garantia</th>
+                    <th>Chip</th>
+                    <th>Fecha</th>
+                    <th>Imei</th>
+
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+            {
+
+                    <tr>
+                        <td>@(item.idgps) </td>
+                        <td>@(item.modelo) </td>
+                        <td>@(item.estado_uso)</td>
+                        <td>@(item.garantia)</td>
+                        <td>@(item.CHIP.numero)</td>
+                        <td>@(item.fecha_compra)</td>
+                        <td>@(item.imei)</td>
+
+                        <td>
+                            <div class="table-data-feature">
+
+                                <button type="button" class="btn btn-primary" data-placement="top" title="Edit" data-toggle="modal" data-target="#nuevo" onclick="obtenerGps('@item.idgps')">
+                                    Editar
+                                </button>
+
+                                <a href="#" title="Eliminar" class="btn btn-warning" onclick="consultar('@item.idgps')">
+                                    Eliminar
+
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+
+                }
+
+
+
+
+            </tbody>
+
+        </table>
+
+
+
+
+
+
+<!-- Modal Guardar/Editar -->
+<div class="modal fade" id="nuevo" tabindex="-1" role="dialog" aria-labelledby="nuevo chip" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <input type="button" class="btn-info" id="tituloModal" value="Nuevo Chip" disabled />
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input value="0" type="hidden" id="idGps" />
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Modelo de Gps:</label>
+                        <input type="text" class="form-control" id="idModelo" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Estado de Uso:</label>
+                        <select class="form-control" name="idEstadoUso" id="idEstadoUso">
+                            <option value="nuevo">NUEVO</option>
+                            <option value="usado">USADO</option>
+                            <option value="nopropio">NO PROPIO</option>
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Garantia:</label>
+                        <input type="text" class="form-control" id="idGarantia" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Numero de Chip:</label>
+                        <select class="form-control" id="idChip">
+
+                                <option value="0" id="idChipGps" >Elija un Número</option>
+
+                            @foreach (CHIP chip in ViewBag.chiNorepetido)
+                            {
+                                <option value="@chip.idchip">@chip.numero</option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Fecha:</label>
+                        <input type="text" data-date-format="dd/mm/yyyy" class="form-control time" id="idFecha" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Imei:</label>
+                        <input type="number" class="form-control" id="idImei" />
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <input type="button" value="Guardar" class="btn btn-primary" id="guardar" onclick="guardarGps()" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+
+
+    $('#idFecha').datepicker({
+        format: 'dd/mm/yyyy',
+        startDate: '-3d'
+    });
+
+    function guardarGps() {
+
+        var url = "@Url.Action("guardarEditar", "Gps")";
+
+        var gps = $("#idGps").val();
+        var modelo = $("#idModelo").val();
+        var estado = $("#idEstadoUso").val();
+        var garantia = $("#idGarantia").val();
+        var chip = $("#idChip").val();
+        var fecha = $("#idFecha").val();
+        var imei = $("#idImei").val();
+        var objChip = { idgps: gps, modelo: modelo, estado_uso: estado, garantia: garantia, idChip: chip, fecha_compra: fecha, imei: imei };
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: JSON.stringify(objChip),
+            contentType: "application/json",
+            success: function (respuesta) {
+                alert(respuesta.mensaje);
+                $('.modal').modal('hide');
+
+            }
+
+        });
+    }
+
+</script>
+
+<script>
+
+
+            function obtenerGps(idGps) {
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("getGps", "Gps")",
+                        data: JSON.stringify({ id: idGps }),
+                        contentType: "application/json",
+
+
+                       success: function (gps) {
+
+
+                           $("#tituloModal").val("Ver");
+                           $("#idGps").val(gps.jsonGps.idGps);
+                           $("#idModelo").val(gps.jsonGps.modelo);
+                           $("#idEstadoUso").val(gps.jsonGps.estadoUso);
+                           $("#idGarantia").val(gps.jsonGps.garantia);
+
+                           // $("#idChip").val(gps.idchip);
+                           $("#idFecha").val(gps.jsonGps.fechaCompra);
+                           $("#idImei").val(gps.jsonGps.imei);
+                           $("#idChipGps").val(gps.jsonGps.idChip);                       
+                           console.log(gps);
+
+
+                        }
+
+                    });
+          }
+
+</script>
+
+<script>
+
+
+      function verGps(idGps) {
+
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("getGps", "Gps")",
+                        data: JSON.stringify({ id: idGps }),
+                        contentType: "application/json",
+
+
+                       success: function (gps) {
+
+
+                           $("#tituloModal").val("Ver");
+                           $("#idModelo").val(gps.jsonGps.modelo);
+                           $("#idEstadoUso").val(gps.jsonGps.estadoUso);
+                           $("#idGarantia").val(gps.jsonGps.garantia);                          
+                           $("#idFecha").val(gps.jsonGps.fechaCompra);
+                           $("#idImei").val(gps.jsonGps.imei);
+
+                           console.log(gps);
+
+
+                        }
+
+                    });
+       }
+
+</script>
+<script>
+
+    function limpiar() {
+
+        $("#tituloModal").val("Ver");
+        $("#idModelo").val("");       
+        $("#idGarantia").val("");
+        $("#idFecha").val("");
+        $("#idImei").val("");
+        $("#idChipGps").val(0);
+    }
+</script>
+
+<script>
+    function consultar(id) {
+        var txt;
+        var r = confirm("Desea eliminar el GPS??");
+        if (r == true) {
+            txt = "Eliminado!";
+            eliminar(id);
+        } else {
+            txt = "Cancelaste!";
+        }
+    }
+</script>
+<script>
+
+    function eliminar(id) {
+        location.href = "@Url.Action("eliminarGps", "Gps")"+"/"+id;
+    }
+</script>

@@ -1,0 +1,85 @@
+﻿@model List<Gpstel.Models.CHIP>
+@{
+    var operadorreporte=ViewBag.operadorreporte;
+}
+<h1>Seleccione Operador de Telefonia</h1>
+@using (Html.BeginForm("Index2", "Reporte", FormMethod.Post, new AjaxOptions{ HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "detalle"}))
+{
+    <span>Operador:</span> @*@Html.TextBox("operador")*@
+    <select name="operador" id="operador">
+        <option value="movistar">Movistar</option>
+        <option value="bitel">Bitel</option>
+        <option value="entel">Entel</option>
+        <option value="claro">Claro</option>
+    </select>
+    <input type="submit" value="Buscar" />        
+}
+@if (operadorreporte != null)
+{
+    <div id="imprimir">
+        <h2>Reporte de Chip @operadorreporte</h2>
+        <div id="detalle">
+        
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+
+                            <th>Numero</th>
+                            <th>Tipo de Contrato</th>
+                            <th>Operador</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>@item.numero</td>
+                                <td>@item.tipo_contrato</td>
+                                <td>@item.operador</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+  
+    <br />
+    <div class="dt-center">
+        <center>
+            <a href="javascript:pruebaDivAPdf()" class="btn btn-info">Pasar a PDF</a>
+        </center>
+    </div>
+}
+
+<script>
+    function pruebaDivAPdf() {
+        var pdf = new jsPDF('p', 'pt', 'letter');
+        source = $('#imprimir')[0];
+
+        specialElementHandlers = {
+            '#bypassme': function (element, renderer) {
+                return true
+            }
+        };
+        margins = {
+            top: 80,
+            bottom: 60,
+            left: 40,
+            width: 522
+        };
+
+        pdf.fromHTML(
+            source,
+            margins.left, // x coord
+            margins.top, { // y coord
+                'width': margins.width,
+                'elementHandlers': specialElementHandlers
+            },
+
+            function (dispose) {
+                pdf.save('Reporte.pdf');
+            }, margins
+        );
+    }
+</script>

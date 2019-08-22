@@ -1,0 +1,45 @@
+﻿@model List<Gpstel.Models.Vehiculo>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 class="page-header">
+    Listado de Clientes
+</h2>
+
+        <table id="example" class="table">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Placa</th>
+                    <th>Particular</th>
+                    <th>Color</th>
+                    <th>Accion</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ Gpstel.Models.Vehiculo vehiculos = new Gpstel.Models.Vehiculo();}
+                @foreach (var m in vehiculos.listarVehiculo())
+            {
+                    <tr>
+                        @if(@m.Cliente.dni_ruc.Length==10)
+                        {
+                        <th>@(m.Cliente.nombre)</th>
+                        }
+                        else
+                        {
+                        <th>@(m.Cliente.nombre + " " + m.Cliente.apellido)</th>
+                        }
+               
+                        <th>@(m.placa)</th>
+                        <th>@(m.anio_vehiculo)</th>
+                        <th>@(m.color)</th>
+                        <th style="align-content:center;">
+                            <a href="~/Pago/Ver/@m.idvehiculo" class="btn btn-warning">Pago</a>
+
+                        </th>
+                    </tr>
+
+                }
+            </tbody>
+        </table>

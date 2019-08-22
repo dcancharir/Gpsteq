@@ -1,0 +1,275 @@
+﻿@model List<Gpstel.Models.CHIP>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>CHIP</h2>
+
+<div class="col-md-12">
+
+
+    <div class="table-data__tool">
+        <div class="table-data__tool-left">
+
+            <div class="rs-select2--light rs-select2--sm">
+
+                <div class="dropDownSelect2"></div>
+            </div>
+
+        </div>
+        <div class="table-data__tool-right">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nuevo" onclick="limpiar();habilitar()">
+                <i class="zmdi zmdi-plus"></i>Agregar Nuevo Chip
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+        <table id="example" class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Operador</th>
+                    <th>Tipo de Contrato</th>
+                    <th>Numero</th>
+
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+            {
+
+                    <tr>
+                        <td>@(item.idchip) </td>
+                        <td>@(item.operador)</td>
+                        <td>@(item.tipo_contrato)</td>
+                        <td>@(item.numero)</td>
+
+                        <td>
+                            <div class="table-data-feature">
+
+                                <button type="button" class="btn btn-primary" data-placement="top" title="Edit" data-toggle="modal" data-target="#nuevo" onclick="habilitar();obtenerChip('@item.idchip')">
+                                    Editar
+                                </button>
+
+                                <a href="#" title="Eliminar" class="btn btn-warning" onclick="consultar('@item.idchip')">
+                                    @*<i class="zmdi zmdi-delete"> </i>*@
+                                    Eliminar
+                                </a>
+
+
+
+
+                                <button class="btn btn-info" data-placement="top" title="More" data-toggle="modal" data-target="#nuevo" onclick="verChip('@item.idchip')">
+                                    @*<i class="zmdi zmdi-more"></i>*@
+                                    Detalles
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                }
+
+
+
+
+            </tbody>
+            @*<tfoot>
+                    <tr>
+                        <th>ID</th>
+                        <th>Operador</th>
+                        <th>Tipo de Contrato</th>
+                        <th>Numero</th>
+
+                        <th></th>
+                    </tr>
+                </tfoot>*@
+        </table>
+
+
+
+
+
+
+
+<!-- Modal Guardar/Editar -->
+<div class="modal fade" id="nuevo" tabindex="-1" role="dialog" aria-labelledby="nuevo chip" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <input type="button" class="btn-info" id="tituloModal" value="Nuevo Chip" disabled />
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input value="0" type="hidden" id="idChip" />
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Operador:</label>
+                        <select class="form-control" id="operador">
+                            <option value="movistar">MOVISTAR</option>
+                            <option value="claro">CLARO</option>
+                            <option value="entel">ENTEL</option>
+                            <option value="bitel">BITEL</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Tipo:</label>
+                        <select class="form-control" id="tipoContrato">
+                            <option value="prepago">PREPAGO</option>
+                            <option value="postpago">POSTPAGO</option>
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Numero:</label>
+                        <input type="number" class="form-control" id="numero" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <input type="button" value="Guardar" class="btn btn-primary" id="guardar" onclick="guardarChip()" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function guardarChip() {
+
+        var id = $("#idChip").val();
+        var url = "@Url.Action("guardarEditar", "Chip")";
+        var operador = $("#operador").val();
+        var tipo = $("#tipoContrato").val();
+        var numero = $("#numero").val();
+        var chip = { idchip: id, Operador: operador, tipo_contrato: tipo, Numero: numero };
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: JSON.stringify(chip),
+            contentType: "application/json",
+            success: function (respuesta) {
+                alert(respuesta.mensaje);
+                $('.modal').modal('hide');
+
+            }
+
+        });
+    }
+
+</script>
+
+<script>
+
+
+            function obtenerChip(idChip) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("getChip", "Chip")",
+                        data: JSON.stringify({ id: idChip }),
+                        contentType: "application/json",
+                        success: function (chip) {
+                            $("#tituloModal").val("Editar");
+                            $("#idChip").val(chip.idchip);
+                            $("#operador").val(chip.operador);
+                            $("#tipoContrato").val(chip.tipo_contrato);
+                            $("#numero").val(parseInt(chip.numero));
+
+
+                        }
+
+                    });
+          }
+
+</script>
+
+<script>
+
+
+            function verChip(idChip) {
+
+
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("getChip", "Chip")",
+                        data: JSON.stringify({ id: idChip }),
+                        contentType: "application/json;charset=utf-8",
+                        success: function (chip) {
+
+
+                            document.getElementById("operador").disabled = true;
+                            document.getElementById("tipoContrato").disabled = true;
+                            document.getElementById("numero").disabled = true;
+                            document.getElementById("guardar").disabled = true;
+
+                           $("#tituloModal").val("Ver");
+                            $("#idChip").val(chip.idchip);
+                           $("#operador").val(chip.operador);
+                            $("#tipoContrato").val(chip.tipo_contrato);
+                            $("#numero").val(parseInt(chip.numero));
+
+                            console.log(chip);
+                        }
+
+                    });
+          }
+
+</script>
+<script>
+
+
+           function habilitar() {
+
+
+                document.getElementById("operador").disabled = false;
+                document.getElementById("tipoContrato").disabled = false;
+                document.getElementById("numero").disabled = false;
+                document.getElementById("guardar").disabled = false;
+
+          }
+
+</script>
+<script>
+           function consultar(id) {
+               var txt;
+               var r = confirm("Desea eliminar el CHIP??");
+               if (r == true) {
+                   txt = "Eliminado!";
+                   eliminar(id);
+               } else {
+                   txt = "Cancelaste!";
+               }
+           }
+</script>
+
+
+<script>
+
+    function eliminar(id) {
+        location.href = "@Url.Action("eliminarChip", "Chip")"+"/"+id;
+    }
+</script>
+
+<script>
+
+    function limpiar() {
+        $("#idChip").val("0");
+        $("#operador").val("movistar");
+        $("#tipoContrato").val("prepago");
+        $("#numero").val("");
+    }
+
+</script>

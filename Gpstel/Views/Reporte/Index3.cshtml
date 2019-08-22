@@ -1,0 +1,106 @@
+﻿
+@using Gpstel.Models;
+@{
+    var context = new ModelGps();
+    var chipsporvehiculo = context.Database.SqlQuery<Vehiculo>("select * from Vehiculo join GPS on Vehiculo.idgps = GPS.idgps join CHIP on CHIP.idchip = GPS.idchip ")
+                   .ToList();
+    GPS gpsporvehiculo = new GPS();
+    var chipporvehiculo = context.Database.SqlQuery<CHIP>("Select * from CHIP where not exists (select null from GPS where GPS.idchip = CHIP.idchip)");
+}
+
+
+
+    <div id="imprimir">
+        <div class="container">
+            <h1>Chips Usador por Vehiculos</h1>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+
+                        <th>Placa</th>
+                        <th>imei</th>
+                        <th>numero</th>
+                        <th>operador</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in chipsporvehiculo)
+                    {
+                        var item2 = gpsporvehiculo.obtenerGps(Convert.ToInt32(item.idgps));
+                        <tr>
+
+                            <td>@item.placa</td>
+                            <td>@item2.imei</td>
+                            <td>@item2.CHIP.numero</td>
+                            <td>@item2.CHIP.operador</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="container">
+            <h1>Chips sin usar</h1>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+
+                        <th>Numero</th>
+                        <th>Tipo de Contrato</th>
+                        <th>Operador</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in chipporvehiculo)
+                    {
+                        <tr>
+
+                            <td>@item.numero</td>
+                            <td>@item.tipo_contrato</td>
+                            <td>@item.operador</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+        <br />
+        <div class="dt-center">
+            <center>
+                <a href="javascript:pruebaDivAPdf()" class="btn btn-info">Pasar a PDF</a>
+            </center>
+        </div>
+
+<script>
+    function pruebaDivAPdf() {
+        var pdf = new jsPDF('p', 'pt', 'letter');
+        source = $('#imprimir')[0];
+
+        specialElementHandlers = {
+            '#bypassme': function (element, renderer) {
+                return true
+            }
+        };
+        margins = {
+            top: 80,
+            bottom: 60,
+            left: 40,
+            width: 522
+        };
+
+        pdf.fromHTML(
+            source,
+            margins.left, // x coord
+            margins.top, { // y coord
+                'width': margins.width,
+                'elementHandlers': specialElementHandlers
+            },
+
+            function (dispose) {
+                pdf.save('Reporte.pdf');
+            }, margins
+        );
+    }
+</script>

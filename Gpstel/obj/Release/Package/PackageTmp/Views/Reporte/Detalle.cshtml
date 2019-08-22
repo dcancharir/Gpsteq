@@ -1,0 +1,110 @@
+﻿@model List<Gpstel.Models.Pago>
+
+@{
+
+    Gpstel.Models.Vehiculo vehiculo = new Gpstel.Models.Vehiculo();
+    var mivehiculo = vehiculo.obtenerVehiculoxId(Convert.ToInt32(ViewBag.idVehiculo));
+}
+
+
+<div id="imprimir">
+    <div class="container dt-body-center">
+        <div class="panel panel-default">
+            <div class="panel panel-heading">
+                <h2 style="vertical-align:middle">Datos del Vehiculo </h2>
+            </div>
+            <div id="contenido">
+                <div class="container">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col">
+                                <label>Placa</label>
+                                <label class="form-control">@mivehiculo.placa</label>
+                            </div>
+                            <div class="col">
+                                <label>Año del Vehiculo</label>
+                                <label class="form-control">@mivehiculo.anio_vehiculo</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>NRO. de Motor</label>
+                                <label class="form-control">@mivehiculo.nro_motor</label>
+                            </div>
+                            <div class="col">
+                                <label>Particular/MTC</label>
+                                <label class="form-control">@mivehiculo.particular_mtc</label>
+                            </div>
+                        </div>
+                        @{ DateTime date = new DateTime();
+                            date = Convert.ToDateTime(mivehiculo.fecha_instalacion);
+                        }
+                        <div class="row">
+                            <div class="col">
+                                <label>Fecha de Instalacion</label>
+                                <label class="form-control">@date.Day/@date.Month/@date.Year</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2>Lista de Pagos por Vehiculo</h2>
+  
+        <table class="table table-striped">
+            <thead>
+                <tr>
+
+                    <th>Concepto</th>
+                    <th>Fecha</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr>
+
+                        <td>@item.concepto</td>
+                        <td>@item.fecha_pago</td>
+                        <td>@item.monto</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+<div class="dt-center">
+    <a href="javascript:pruebaDivAPdf()" class="btn btn-info">Pasar a PDF</a>
+</div>
+<script>
+    function pruebaDivAPdf() {
+        var pdf = new jsPDF('p', 'pt', 'letter');
+        source = $('#imprimir')[0];
+
+        specialElementHandlers = {
+            '#bypassme': function (element, renderer) {
+                return true
+            }
+        };
+        margins = {
+            top: 80,
+            bottom: 60,
+            left: 40,
+            width: 522
+        };
+
+        pdf.fromHTML(
+            source,
+            margins.left, // x coord
+            margins.top, { // y coord
+                'width': margins.width,
+                'elementHandlers': specialElementHandlers
+            },
+
+            function (dispose) {
+                pdf.save('Reporte.pdf');
+            }, margins
+        );
+    }
+</script>

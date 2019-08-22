@@ -1,0 +1,262 @@
+﻿@model Gpstel.Models.Vehiculo
+@using Gpstel.Models;
+@{
+    ViewBag.Title = "Ver";
+    Gpstel.Models.Vehiculo vehiculo = new Gpstel.Models.Vehiculo();
+    var m = vehiculo.obtenerVehiculoxId(Convert.ToInt32(Model.idvehiculo));
+    Gpstel.Models.Pago pagos = new Gpstel.Models.Pago();
+    var p = pagos.listarPagosxVehiculo(Convert.ToInt32(Model.idvehiculo));
+
+    var prueba = ViewBag.pagoprueba;
+}
+
+
+@* Seccion de Detalle de Vehiculo *@
+
+   
+        
+            <center>
+                <h3 style="vertical-align:middle">Datos del Vehiculo </h3>
+
+                <h4><a style='cursor: pointer;' onClick="muestra_oculta('contenido')" title="" class="btn btn-info">Mostrar / Ocultar Datos</a> </h4>
+            </center>
+              
+        <div id="contenido">         
+             
+                    <div class="row">
+                        <div class="col">
+                            <label>Placa</label>
+                            <label class="form-control">@m.placa</label>
+                        </div>
+                        <div class="col">
+                            <label>Año del Vehiculo</label>
+                            <label class="form-control">@m.anio_vehiculo</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label>NRO. de Motor</label>
+                            <label class="form-control">@m.nro_motor</label>
+                        </div>
+                        <div class="col">
+                            <label>Particular/MTC</label>
+                            <label class="form-control">@m.particular_mtc</label>
+                        </div>
+                    </div>
+                    @{ DateTime date = new DateTime();
+                        date = Convert.ToDateTime(m.fecha_instalacion);
+                    }
+                    <div class="row">
+                        <div class="col">
+                            <label>Fecha de Instalacion</label>
+                            <label class="form-control">@date.Day/@date.Month/@date.Year</label>
+                        </div>
+                    </div>
+                
+            
+        </div>
+       
+
+@* Seccion de Listado de Pagos *@
+
+    <center>
+        <h3 style="vertical-align:middle">Historial de Pagos</h3>
+    </center>
+
+
+        <table id="example" class="table">
+            <thead>
+                <tr>
+                    <th>Concepto</th>
+                    <th>Placa</th>
+                    <th>Fecha de Pago</th>
+                    <th>Monto</th>  
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var r in p)
+            {
+                    <tr>
+                        <th>@(r.concepto)</th>
+                        <th>@(r.Vehiculo.placa)</th>
+                        <th>@(r.fecha_pago)</th>
+                        <th>@(r.monto)</th>
+                        <th style="align-content:center;">
+                            <a href="~/Pago/AgregarEditar/@r.idpago" class="btn btn-primary" data-placement="top" title="Edit" data-toggle="modal" @*data-target="#nuevo"*@ @*onclick="obtenerPago('@r.idpago')"*@>
+                                Editar
+                            </a>
+                            <a href="#" class="btn btn-info" onclick="ob('@r.idpago')">Observacion</a>
+                            
+                        </th>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+ 
+
+@* Seccion de Pagos *@
+<div class="panel panel-heading">
+    <center>
+        <h3 style="vertical-align:middle">Registrar Pago</h3>
+    </center>
+</div>
+
+    @using (Html.BeginForm("Guardar", "Pago", FormMethod.Post, new { id = "frm-tipoevento" }))
+    {
+        /*@class= "form-control",disabled = true*/
+        <input type="hidden" name="idpago" value="0" />
+        <input type="hidden" name="idvehiculo" value="@Model.idvehiculo" />
+
+        <div class="panel panel-default">
+            
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <label>Concepto</label>
+                    <input type="text" name="concepto" class="form-control"  />
+                </div>
+
+                <div class="form-group">
+                    <label>Monto</label>
+                    <input type="number" name="monto" class="form-control" value="@Model.mensualidad" />
+                </div>
+            </div>
+        </div>
+        <div class="text-right">
+            <button type="submit" class="btn btn-primary">Grabar</button>
+            <a href="~/Pago/Index" class="btn btn-danger">Cancelar</a>
+        </div>
+    }
+
+<!-- Modal Guardar/Editar -->
+<div class="modal fade" id="nuevo" tabindex="-1" role="dialog" aria-labelledby="Editar Pago" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <input type="button" class="btn-info" id="tituloModal" value="Editar Pago" disabled />
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    @*<input type="hidden" id="idPago" />
+                    <input type="hidden" id="estado"/>
+                    <input  type="hidden" id="fecha_pago"/>
+                    <input type="hidden" id="idVehiculo"/>*@
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Monto:</label>
+                        <input type="number" class="form-control" id="monto" value="" />
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Concepto:</label>
+                        <textarea class="form-control cc-exp" id="concepto" maxlength="99"></textarea>                        
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <input type="button" value="Guardar" class="btn btn-primary" id="guardar" onclick="editarPago()" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+<script>
+
+    function editarPago() {
+
+        var idpago = $("#idPago").val();
+        var url = "@Url.Action("Guardar", "Pago")";
+        var monto = $("#monto").val();
+        var concepto = $("#concepto").val();
+        var estado = $("#estado").val();
+        var fecha_pago = $("#fecha_pago").val();
+        var idvehiculo = $("#idVehiculo").val();
+        var pago = { idPago: idpago, monto: monto, concepto: concepto, estado: estado, fecha_pago: fecha_pago, idVehiculo:idvehiculo };
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: JSON.stringify(pago),
+            contentType: "application/json",
+            success: function (respuesta) {
+                alert(respuesta.mensaje);
+                $('.modal').modal('hide');
+
+            }
+
+        });
+    }
+
+</script>
+<script>
+
+
+    function obtenerPago(idp) {
+
+        $.ajax({
+            type: "POST",
+            url: "/Pago/GetPago/" + idp,
+            content: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify({d:idp}),
+            success: function (d) {
+                if (d.success == true)
+                    alert('correcto!!' + d.concepto);
+                else {
+                    alert('error!!' + d.concepto)
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert('Error!!');
+            }
+        });
+
+                    @*$.ajax({
+                        type: "POST",
+                        url: "@Url.Action("GetPago", "Pago")" + "/" + idp,
+                        //url: "~/Pago/getPago/" + idPago,
+                        //data: JSON.stringify({ id: idp }),
+                        contentType: "application/json;charset=utf-8",
+                        success: function (pago) {
+                            $("#tituloModal").val("Editar");                   
+
+
+
+                            $("#idPago").val(pago.idpago);                           
+                            $("#monto").val(parseInt(pago.monto));
+                            $("#concepto").val(pago.concepto);
+                            $("#estado").val(pago.estado);
+                            $("#fecha_pago").val(pago.fecha_pago);
+                            $("#idVehiculo").val(pago.idVehiculo);
+
+
+                        }
+
+                    });*@
+          }
+
+</script>
+
+
+<script>
+
+    function muestra_oculta(id) {
+        if (document.getElementById) {
+            var el = document.getElementById(id);
+            el.style.display = (el.style.display == 'none') ? 'block' : 'none';
+        }
+    }
+    window.onload = function () {
+        muestra_oculta('contenido');
+    }
+    function ob(id) {
+         location.href = "@Url.Action("observacion", "ObPago")" + "/" + id;
+    }
+</script>
+}

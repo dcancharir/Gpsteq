@@ -1,0 +1,21 @@
+﻿
+@{
+    Layout = null;
+}
+@using Gpstel.Security;
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Work1</title>
+</head>
+<body>
+    <div> 
+        Work 1
+    </div>
+    Welcome @SessionPersister.Username
+    <br />
+    <a href="@Url.Action("Logout","Usuario")">Logout</a>
+</body>
+</html>

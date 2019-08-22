@@ -1,0 +1,29 @@
+﻿@model List<Gpstel.Models.Vehiculo>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Lista de Vehiculos</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Placa</th>
+            <th>Modelo</th>
+            <th>Motor</th>
+            <th>Opcion</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.placa</td>
+                <td>@item.modelo</td>
+                <td>@item.nro_motor</td>
+                <td>@Ajax.ActionLink("Ver Datos","Detalle","Reporte",new {id = item.idvehiculo},new AjaxOptions { HttpMethod="GET", InsertionMode=InsertionMode.Replace, UpdateTargetId="detalle"}, new { @class="btn btn-info"})</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div id="detalle"></div>
+

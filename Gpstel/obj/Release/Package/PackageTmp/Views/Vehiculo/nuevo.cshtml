@@ -1,0 +1,132 @@
+﻿@model Gpstel.Models.Vehiculo
+@using Gpstel.Models;
+
+@{
+    ViewBag.Title = "nuevo";
+}
+
+
+<div class="container">
+    @using (Html.BeginForm("guardarEditar", "Vehiculo", FormMethod.Post, new { @class = "from" }))
+    {
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Placa</label>
+                @Html.TextBoxFor(x => x.placa, new { @class = "form-control", @placeholder = "Ingrese Placa" })
+
+            </div>
+            <div class="form-group col-md-6">
+                <label>Marca</label>
+                @Html.TextBoxFor(x => x.marca, new { @class = "form-control", @placeholder = "Ingrese la Marca" })
+
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Modelo</label>
+                @Html.TextBoxFor(x => x.modelo, new { @class = "form-control", @placeholder = "Ingrese Modelo" })
+
+            </div>
+            <div class="form-group col-md-6">
+                <label>Año</label>
+                @Html.TextBoxFor(x => x.anio_vehiculo, new { @class = "form-control", @placeholder = "Ingrese el año del vehiculo" })
+
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Color</label>
+                @Html.TextBoxFor(x => x.color, new { @class = "form-control", @placeholder = "Ingrese Color" })
+
+            </div>
+            <div class="form-group col-md-6">
+                <label>Numero de Motor</label>
+                @Html.TextBoxFor(x => x.anio_vehiculo, new { @class = "form-control", @placeholder = "Ingrese el numero de motor" })
+
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Mensualidad</label>
+                @Html.TextBoxFor(x => x.mensualidad, new { @class = "form-control", @placeholder = "Ingrese mensualidad" })
+
+            </div>
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group col-md-3">
+                <label for="inputState">State</label>
+                <select id="inputState" class="form-control">
+                    <option selected>Escoge...</option>
+                    <option value="0">Inactivo</option>
+                    <option value="1">Activo</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputState">Tipo de Vehiculo</label>
+                <select id="inputState" class="form-control">
+                    <option selected>Escoge...</option>
+                    <option value="0">MTC</option>
+                    <option value="1">PARTICULAR</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputState">GPS</label>
+                <select id="inputState" class="form-control">
+                    <option selected>Escoge...</option>
+
+
+
+                    @foreach (GPS gps in ViewBag.gps)
+                    {
+                        <option value="@gps.idgps">@gps.imei - @gps.modelo</option>
+                    }
+
+
+
+                </select>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="inputState">Cliente</label>
+                <select id="inputState" class="form-control">
+                    <option selected>Escoge...</option>
+
+
+
+                    @foreach (Cliente cliente in ViewBag.cliente)
+                    {
+                        <option value="@cliente.idcliente">@cliente.nombre - @cliente.dni_ruc</option>
+                    }
+
+
+
+                </select>
+            </div>
+
+            <div class="form-group  col-md-3">
+                <label for="recipient-name" class="col-form-label">Fecha de Instalacion:</label>
+                <input type="text" data-date-format="dd/mm/yyyy" class="form-control time" id="idFecha" />
+            </div>
+
+        </div>
+
+       
+
+        <button type="submit" class="btn btn-primary">Agregar</button>
+
+
+
+    }
+
+</div>
+
+<script>
+    $('#idFecha').datepicker({
+        format: 'dd/mm/yyyy',
+        startDate: '-3d'
+    });
+
+</script>

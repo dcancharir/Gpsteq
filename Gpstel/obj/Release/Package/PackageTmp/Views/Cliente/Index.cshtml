@@ -1,0 +1,481 @@
+﻿@model List<Gpstel.Models.Cliente>
+
+@using Gpstel.Models;
+@{
+    ViewBag.Title = "Index";
+     
+}
+
+<h2>Cliente</h2>
+<div class="col-md-12">
+
+
+    <div class="table-data__tool">
+        <div class="table-data__tool-left">
+
+            <div class="rs-select2--light rs-select2--sm">
+
+                <div class="dropDownSelect2"></div>
+            </div>
+
+        </div>
+        <div class="table-data__tool-right">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nuevo" onclick="limpiar();">
+                <i class="zmdi zmdi-plus"></i>Nuevo Cliente
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+        <table id="example" class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha del Contrato</th>
+                    @*<th>Estado Del Cliente</th>*@
+                    <th>Cliente</th>
+                    
+                    <th>DNI/RUC</th>
+                    <th>Telefono</th>
+                    <th>Celular</th>
+                    <th>Correo</th>
+                    @*<th>Direccion</th>*@
+                    <th>Distrito</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+
+                    <tr>
+                        <td>@(item.idcliente) </td>
+                        <td>@(item.fecha_contrato) </td>
+                        @*@if (item.estado == "A")
+                        {
+                            <td>ACTIVO</td>
+                        }
+                        else
+                        {
+                            <td>INACTIVO</td>
+                        }*@
+
+
+                        <td>@(item.nombre + " " + item.apellido)</td>
+
+                        
+                        <td>@(item.dni_ruc)</td>
+                        <td>@(item.telefono)</td>
+                        <td>@(item.celular)</td>
+                        <td>@(item.correo)</td>
+                        @*<td>@(item.direccion)</td>*@
+                        <td>@(item.Distrito.nombre) </td>
+
+
+
+
+
+                        <td>
+                          
+
+                                <button type="button" class="btn btn-primary" data-placement="top" title="Edit" data-toggle="modal" data-target="#nuevo" onclick="obtenerCliente('@item.idcliente')">
+                                    Editar
+                                </button>
+
+                                <a href="#" title="Eliminar" class="btn btn-warning" onclick="consultar('@item.idcliente')">
+                                    Eliminar
+                                </a>
+
+
+                                <a href="#" class="btn btn-info" onclick="ob('@item.idcliente')">Obs.</a>
+                            @*<a href="~/Cliente/Form/@item.idcliente" class="btn btn-primary">Correo</a>*@
+
+
+
+                          
+                        </td>
+                    </tr>
+
+                }
+
+
+
+
+            </tbody>
+       
+        </table>
+
+
+
+
+
+
+
+<!-- Modal Guardar/Editar -->
+<div class="modal fade" id="nuevo" tabindex="-1" role="dialog" aria-labelledby="Cliente" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <input type="button" class="btn-info" id="tituloModal" value="Cliente" disabled />
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input value="0" type="hidden" id="idcliente" />
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Fecha de Contrato:</label>
+                        <input type="text" class="form-control date" id="idFecha" />
+                    </div>
+
+
+                    <div class="span4" id="selDiv">
+                        <label class="col-form-label">Tipo de Documento</label>
+                        <select class="selectpicker" data-style="btn-danger" id="opcion" name="opcion" onchange="seleccionado()" >
+                            <option selected value="">Seleccione Documento</option>
+                            <option value="dni">DNI</option>
+                            @*<option value="subcat">Subcategorias</option>*@
+                            <option value="ruc">RUC</option>
+                        </select>
+                    </div>
+
+                
+
+                    <!--Show Product Categories List-->
+
+                    <div id="dni_1" style="display:none;">
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Nombre:</label>
+                            <input type="text" class="form-control" id="idNombre" placeholder="Nombre" maxlength="100" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Apellido:</label>
+                            <input type="text" class="form-control" id="idApellido" placeholder="Apellido" maxlength="100" />
+                        </div>
+                    </div>
+
+                    <div id="ruc_1" style="display:none;">
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Empresa:</label>
+                            <input type="text" class="form-control" id="idRuc" placeholder="Empresa" maxlength="100" required />
+                        </div>
+                    </div>          
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Nro Documento:</label>
+                        <input type="text" class="form-control" id="idDniRuc" placeholder="DNI o RUC" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Telefono:</label>
+                        <input type="text" class="form-control" id="idTelefono" placeholder="Telefono" />
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Celular:</label>
+                        <input type="text" class="form-control" id="idCelular" placeholder="Celular"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Correo:</label>
+                        <input type="email" class="form-control" id="idEmail" placeholder="Email" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Direccion</label>
+                        <input type="text" class="form-control" id="idDireccion" placeholder="Dirección" maxlength="250" required/>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Departamento:</label>
+                        <select class="form-control" name="idDepartamento" id="idDepartamento">
+                            <option value="-1">Seleccione un Departamento</option>                          
+                            @foreach (var item in ViewBag.departamento)
+                            {
+                                <option value="@item.iddepartamento">@item.nombre </option>
+                            }
+
+                        </select>
+                    </div>
+                   
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Provincia:</label>
+                        <select class="form-control" name="idProvincia" id="idProvincia"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Distrito:</label>
+                        <select class="form-control" name="idDistrito" id="idDistrito"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Estado:</label>
+                        <select class="form-control" name="idEstadoUso" id="idEstado">
+                            <option value="" selected>Seleccione un Estado</option>
+                            <option value="A">ACTIVO</option>
+                            <option value="I">INACTIVO</option>
+                        </select>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <input type="button" value="Guardar" class="btn btn-primary" id="guardar" onclick="guardarCliente()" />
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+<script>
+    function seleccionado() {
+        var opt = $('#opcion').val();
+        // alert(opt);
+        if (opt == "dni") {
+            $('#dni_1').show();         
+            $('#ruc_1').hide();
+        } else {            
+                $('#dni_1').hide();               
+                $('#ruc_1').show();
+           
+        }
+    }
+</script>
+<script>
+
+
+    function obtenerCliente(idcliente) {
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("getCliente", "Cliente")",
+                        data: JSON.stringify({ id: idcliente }),
+                        contentType: "application/json",
+
+
+                        success: function (cliente) {
+                            
+
+                            $("#idcliente").val(cliente.jsoncliente.idCliente);
+                            $("#idFecha").val(cliente.jsoncliente.fecha_contrato);
+                            $("#idEstado").val(cliente.jsoncliente.estado);
+
+                            if (cliente.jsoncliente.apellido == "" || cliente.jsoncliente.apellido == null) {
+                                $("#idRuc").val(cliente.jsoncliente.nombre);
+                                $("#ruc_1").show();
+                                $("#dni_1").hide;
+                                
+
+                               
+                            }
+                            else {
+                                $("#idNombre").val(cliente.jsoncliente.nombre);
+                                $("#idApellido").val(cliente.jsoncliente.apellido);
+                                $("#dni_1").show();
+                                $("#ruc_1").hide();
+                                
+                                
+                            }
+                            $("#idDniRuc").val(cliente.jsoncliente.dni_ruc);
+                            $("#idTelefono").val(cliente.jsoncliente.telefono);
+                            $("#idCelular").val(cliente.jsoncliente.celular);
+                            $("#idEmail").val(cliente.jsoncliente.correo);
+                            $("#idDireccion").val(cliente.jsoncliente.direccion);
+                            $("#idDistrito").val();
+
+                            var s = '<option value="' + cliente.jsondistrito.iddistrito + '">' + cliente.jsondistrito.nombre + '</option>';
+                            $('#idDistrito').html(s);
+                           console.log(cliente);
+
+
+                        }
+
+                    });
+          }
+
+</script>
+<script>
+    function consultar(id) {
+        var txt;
+        var r = confirm("Desea eliminar el cliente??");
+        if (r == true) {
+            txt = "Eliminado!";
+            eliminar(id);
+        } else {
+            txt = "Cancelaste!";
+        }
+    }
+</script>
+
+<script>
+
+
+
+    function guardarCliente() {
+
+        var url = "@Url.Action("guardarEditar", "Cliente")";
+        var opcion = $("#opcion").val();
+        if (opcion == "dni") {
+            var nombre = $("#idNombre").val();
+            var apellido = $("#idApellido").val();
+        }
+        else {
+            var nombre = $("#idRuc").val();
+            var apellido = "";
+        }
+
+       // var ruc = $("#idRuc").val();
+        var cliente = $("#idcliente").val();
+        var fecha = $("#idFecha").val();
+        var estado = $("#idEstado").val();
+      
+        var dniRuc = $("#idDniRuc").val();
+        var telefono = $("#idTelefono").val();
+        var celular = $("#idCelular").val();
+        var email = $("#idEmail").val();
+        var direccion = $("#idDireccion").val();
+        var distrito = $("#idDistrito").val();
+        var objChip = { idcliente: cliente, fecha_contrato: fecha, estado: estado, nombre: nombre, apellido: apellido, dni_ruc: dniRuc, telefono: telefono, celular: celular, correo: email, direccion: direccion, iddistrito: distrito };
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: JSON.stringify(objChip),
+            contentType: "application/json",
+            success: function (respuesta) {
+                alert(respuesta.mensaje);
+                $('.modal').modal('hide');
+
+            }
+
+        });
+    }
+
+</script>
+
+
+
+
+<script>
+
+    function limpiar() {
+
+        $("#idcliente").val("0");
+        $("#idFecha").val("");
+        $("#idEstado").val("");
+        $("#idNombre").val("");
+        $("#idApellido").val("");
+        $("#idDniRuc").val("");
+        $("#idTelefono").val("");
+        $("#idCelular").val("");
+        $("#idEmail").val("");
+        $("#idDireccion").val("");
+    }
+</script>
+
+
+<script>
+
+    function eliminar(id) {
+        location.href = "@Url.Action("eliminarCliente", "Cliente")"+"/"+id;
+    }
+
+
+     function ob(id) {
+         location.href = "@Url.Action("observacion", "ObCliente")" + "/" + id;
+    }   
+
+</script>
+<script>
+    //validaciones
+     function validar() {
+         var fecha, estado, nombre, apellido, dniruc, telefono, celular, email, direccion,expresioncorreo;
+         fecha = document.getElementById('#idFecha').value();
+         estado = document.getElementById('#idEstado').value();
+         nombre = document.getElementById('#idNombre').value();
+         apellido = document.getElementById('#idApellido').value();
+         dniruc = document.getElementById("#idDniRuc").value();
+         telefono = document.getElementById('#idTelefono').value();
+         celular = document.getElementById('#idCelular').value();
+         email = document.getElementById('#idEmail').value();
+         fecha = document.getElementById('#idDireccion').value();
+         expresioncorreo = /\w+\w+\.+[a-z]/;
+         expresiondni = /(^([0-9]{8,10})|^)$/;
+       
+         if (!expresiondni.test(dniruc)) {
+             alert('Dni/RUC Invalido');
+         }
+     }
+</script>
+<script>
+        $(document).ready(function () {
+            $('#idFecha').datepicker({
+                format: 'dd/mm/yyyy',
+                startDate: '-3d'
+            });
+        });
+
+
+    @*function eliminar(id) {
+        location.href = "@Url.Action("eliminarGps", "Gps")"+"/"+id;
+    }*@
+
+    $(document).ready(function ()
+    {
+
+        $('#idDepartamento').on('change', function ()
+        {
+
+            var departamento = $('#idDepartamento option:selected').val();
+
+                $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("cargarProvincias", "Cliente")",
+                        data: JSON.stringify({ iddepartamento: departamento }),
+                        contentType: "application/json",
+                    success: function (provincias) {
+                        console.log(provincias);
+
+
+                            var s= '<option value="-1">Seleccione una Provincia</option>';
+
+                            for (var i = 0; i < provincias.length; i++) {
+                                s += '<option value="' + provincias[i].idprovincia + '">' + provincias[i].nombre + '</option>';
+                            }
+
+                            $('#idProvincia').html(s);
+
+                        }
+
+                    });
+        });
+
+        $('#idProvincia').on('change', function ()
+        {
+
+            var provincia = $('#idProvincia option:selected').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("cargarDitritos", "Cliente")",
+                    data: JSON.stringify({ idprovincia: provincia }),
+                    contentType: "application/json",
+                    success: function (distrito) {
+                        console.log(distrito);
+
+                        var s = '';
+                        for (var i = 0; i < distrito.length; i++) {
+                            s += '<option value="' + distrito[i].iddistrito + '">' + distrito[i].nombre + '</option>';
+                            }
+
+                            $('#idDistrito').html(s);
+
+                        }
+
+                    });
+        });
+
+    });
+</script>
+}
